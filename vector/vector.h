@@ -1,5 +1,5 @@
-#ifndef DEQUE_H_
-#define DEQUE_H_
+#ifndef VECTOR_H_
+#define VECTOR_H_
 
 // ------------------------ LIBRARIES (USED FOR TYPES) ------------------------
 
