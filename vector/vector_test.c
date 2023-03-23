@@ -43,6 +43,10 @@ void print_vector_test1(Vector v, int b) {
 }
 
 void test1() {
+  printf(
+      "}\n====================================== TEST 1 "
+      "============================"
+      "\n");
   Vector v = NULL;
   v = vector_initialize(v);
 
@@ -150,6 +154,10 @@ void print_vector_test2(Vector v, int b) {
 }
 
 void test2() {
+  printf(
+      "}\n====================================== TEST 2 "
+      "============================"
+      "\n");
   Vector v = NULL;
   v = vector_initialize(v);
 
@@ -199,7 +207,86 @@ void test2() {
   vector_free(v);
 }
 
+// ------------------------ TEST 2 ------------------------
+
+typedef struct SomeSt {
+  int x, y;
+} Some;
+
+void print_vector_test3(Vector v) {
+  printf("Size -> %lu\nIsEmpty -> %u\nElements:\n   {", vector_size(v),
+         vector_is_empty(v));
+  for (unsigned int i = 0; i < vector_size(v); i++) {
+    if (i != 0) printf(", ");
+    Some *x = (Some *)vector_element(v, i);
+    printf("{%d, %d}", (*x).x, (*x).y);
+    free(x);
+  }
+  printf(
+      "}\n=================================================================="
+      "\n");
+}
+
+void test3() {
+  printf(
+      "}\n====================================== TEST 3 "
+      "============================"
+      "\n");
+
+  Vector v = NULL;
+  Some arr0[10] = {{-1, 0, 1},    {-1435, 1, 1},     {3, 2, 1}, {7, -99999, 1},
+                   {-1435, 4, 1}, {134364745, 5, 1}, {0, 6, 1}, {0, 7, 1},
+                   {1, 8, 1},     {3, 9, 1}};
+  Some *z = malloc(sizeof(Some));
+  *z = arr0[0];
+  v = vector_initialize_with_elements(v, 10, z);
+  free(z);
+
+  print_vector_test3(v);
+
+  for (unsigned int i = 0; i < 10; i++) {
+    Some *x = malloc(sizeof(Some));
+    *x = arr0[i];
+    vector_push_back(v, (void *)x);
+    free(x);
+  }
+  print_vector_test3(v);
+
+  Some *y = malloc(sizeof(Some));
+  (*y).x = 1500000;
+  (*y).y = -123;
+  vector_assign(v, y, 0);
+  free(y);
+  print_vector_test3(v);
+
+  vector_pop_back(v);
+  print_vector_test3(v);
+
+  vector_erase(v, 2);
+  print_vector_test3(v);
+
+  vector_erase(v, 0);
+  print_vector_test3(v);
+
+  vector_erase(v, vector_size(v) - 1);
+  print_vector_test3(v);
+
+  for (unsigned int i = 0; i < 10; i++) {
+    Some *x = malloc(sizeof(Some));
+    *x = arr0[i];
+    vector_push_back(v, (void *)x);
+    free(x);
+  }
+  print_vector_test3(v);
+
+  while (vector_size(v) > 3) vector_pop_back(v);
+  print_vector_test3(v);
+
+  vector_free(v);
+}
+
 int main() {
   test1();
   test2();
+  test3();
 }

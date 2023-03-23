@@ -43,6 +43,20 @@ Vector vector_initialize(Vector v) {
   return v;
 }
 
+Vector vector_initialize_with_elements(Vector v, unsigned int n, void *el) {
+  __CONDITION_ERROR((v == NULL), "vector_initialize", "Vector doesn't NULL");
+
+  v = vector_initialize(v);
+  for (unsigned int i = 0; i < n; i++) {
+    vector_push_back(v, el);
+  }
+
+  __CONDITION_ERROR((v != NULL), "vector_initialize", "Vector is NULL");
+  __CONDITION_ERROR((vector_size(v) == n), "vector_initialize",
+                    "Bad initialization of vector");
+  return v;
+}
+
 void vector_push_back(Vector v, void *el) {
   __CONDITION_ERROR((v != NULL), "vector_push_back", "Vector is NULL");
   __CONDITION_ERROR((el != NULL), "vector_push_back", "Element is NULL");

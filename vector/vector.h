@@ -25,6 +25,18 @@ typedef struct VectorSt *Vector;
 Vector vector_initialize(Vector v);
 
 /**
+ * @brief Vector inicialization (create the structure and allocate needed
+ * memory) -> creates n elements equals to el
+ * @param v
+ * @param n
+ * @param el
+ * @return Vector initialized with n elements equal to el (copy of it)
+ * @pre v == NULL
+ * @post v != NULL
+ */
+Vector vector_initialize_with_elements(Vector v, unsigned int n, void *el);
+
+/**
  * @brief Push a element in the end of the vector (the structure generates a
  * copy of the element)
  * @param v
