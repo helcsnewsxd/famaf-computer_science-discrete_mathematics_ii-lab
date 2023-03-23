@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #define __CONDITION_ERROR(cond, pl, s)             \
-  if (!cond) {                                     \
+  if (!(cond)) {                                   \
     fprintf(stderr, "Error into %s: %s\n", pl, s); \
     exit(EXIT_FAILURE);                            \
   }
