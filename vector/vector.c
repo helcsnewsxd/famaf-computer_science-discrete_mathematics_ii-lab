@@ -1,256 +1,213 @@
+// ------------------------ LIBRERIAS ------------------------
+
 #include "vector.h"
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <string.h>  // memcpy
+#include <stdlib.h>
 
 #include "../errors/error.h"
 
-// ------------------------ FUNCIONES AUXILIARES ------------------------
-
-static void *create_element(void *el) {
-  __CONDITION_ERROR((el != NULL), "create_element", "Element is NULL");
-
-  void *nw_el = NULL;
-  nw_el = malloc(sizeof(void *));
-  __CONDITION_ERROR((nw_el != NULL),
-                    "create_element (static function to copy *el)",
-                    "Malloc error");
-
-  nw_el = memcpy(nw_el, el, sizeof(void *));
-  return nw_el;
-}
-
-// ------------------------ ESTRUCTURA ------------------------
+// ------------------------ ESTRUCTURA DE DATOS ------------------------
 
 struct VectorSt {
-  size_t size, capacity;
-  void **array;
+  size_t tamano, capacidad;
+  void **lista;
 };
 
 // ------------------------ FUNCIONES CONSTRUCTIVAS ------------------------
 
-Vector vector_initialize(Vector v) {
-  __CONDITION_ERROR((v == NULL), "vector_initialize", "Vector doesn't NULL");
+Vector vector_inicializar(Vector v) {
+  __ERROR_CONDICIONAL(v == NULL, "vector_inicializar", "Vector no es NULL");
 
-  v = (Vector)malloc(sizeof(struct VectorSt));
-  __CONDITION_ERROR((v != NULL), "vector_initialize", "Malloc error");
+  v = malloc(sizeof(struct VectorSt));
+  __ERROR_CONDICIONAL(v != NULL, "vector_inicializar", "Error con Malloc");
 
-  v->size = v->capacity = 0;
-  v->array = NULL;
+  v->tamano = v->capacidad = 0;
+  v->lista = NULL;
 
-  __CONDITION_ERROR((v != NULL), "vector_initialize", "Vector is NULL");
+  __ERROR_CONDICIONAL(v != NULL, "vector_inicializar",
+                      "Error al inicializar el vector");
   return v;
 }
 
-Vector vector_initialize_with_elements(Vector v, unsigned int n, void *el) {
-  __CONDITION_ERROR((v == NULL), "vector_initialize", "Vector doesn't NULL");
+void vector_encolar(Vector v, void *el) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_encolar", "Vector es NULL");
+  __ERROR_CONDICIONAL(el != NULL, "vector_encolar", "Elemento es NULL");
 
-  v = vector_initialize(v);
-  for (unsigned int i = 0; i < n; i++) {
-    vector_push_back(v, el);
+  if (!v->capacidad) {
+    v->capacidad = 1;
+    v->lista = malloc(sizeof(el));
+  } else if (v->capacidad == v->tamano) {
+    v->capacidad *= 2;
+    v->lista = realloc(v->lista, v->capacidad * sizeof(el));
   }
+  v->lista[v->tamano] = el;
+  v->tamano++;
 
-  __CONDITION_ERROR((v != NULL), "vector_initialize", "Vector is NULL");
-  __CONDITION_ERROR((vector_size(v) == n), "vector_initialize",
-                    "Bad initialization of vector");
-  return v;
-}
-
-void vector_push_back(Vector v, void *el) {
-  __CONDITION_ERROR((v != NULL), "vector_push_back", "Vector is NULL");
-  __CONDITION_ERROR((el != NULL), "vector_push_back", "Element is NULL");
-
-  if (v->capacity == 0) {
-    v->capacity = 1;
-
-    v->array = malloc(sizeof(void *));
-    __CONDITION_ERROR((v->array != NULL), "vector_push_back", "Malloc error");
-
-  } else if (v->capacity == v->size) {
-    v->capacity *= 2;
-    v->array = realloc(v->array, sizeof(void *) * v->capacity);
-  }
-
-  v->array[v->size] = create_element(el);
-  v->size++;
+  __ERROR_CONDICIONAL(vector_elemento(v, vector_tamano(v) - 1) == el,
+                      "vector_encolar", "Error en encolado del vector");
 }
 
 // ------------------------ FUNCIONES DESTRUCTIVAS ------------------------
 
-void vector_free(Vector v) {
-  if ((v != NULL)) {
-    for (unsigned int i = 0; i < v->size; i++) {
-      free(v->array[i]);
-      v->array[i] = NULL;
+void vector_liberar(Vector v) {
+  for (unsigned int i = 0; i < v->tamano; i++) {
+    if (v->lista[i] != NULL) {
+      free(v->lista[i]);
+      v->lista[i] = NULL;
     }
-    free(v->array);
-    v->array = NULL;
-    free(v);
-    v = NULL;
   }
+  free(v->lista);
+  v->lista = NULL;
+  free(v);
+  v = NULL;
 
-  __CONDITION_ERROR((v == NULL), "vector_free", "Bad free of vector");
+  __ERROR_CONDICIONAL(v == NULL, "vector_liberar",
+                      "Error en liberación de memoria del vector");
 }
 
-// ------------------------ FUNCIONES DE INFORMACIÓN ------------------------
+// ------------------------ FUNCIONES INFORMATIVAS ------------------------
 
-bool vector_is_empty(Vector v) {
-  __CONDITION_ERROR((v != NULL), "vector_is_empty", "Vector is NULL");
+bool vector_esta_vacio(Vector v) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_esta_vacio", "Vector es NULL");
 
-  return v->size == 0;
+  return !v->tamano;
 }
 
-size_t vector_size(Vector v) {
-  __CONDITION_ERROR((v != NULL), "vector_size", "Vector is NULL");
+size_t vector_tamano(Vector v) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_tamano", "Vector es NULL");
 
-  return v->size;
+  return v->tamano;
 }
 
-void *vector_element(Vector v, unsigned int idx) {
-  __CONDITION_ERROR((v != NULL), "vector_element", "Vector is NULL");
-  __CONDITION_ERROR((idx < vector_size(v)), "vector_element",
-                    "Overflow of index");
+void *vector_elemento(Vector v, unsigned int indice) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_elemento", "Vector es NULL");
+  __ERROR_CONDICIONAL(indice < v->tamano, "vector_elemento",
+                      "Índice fuera de rango");
 
-  void *el = create_element(v->array[idx]);
-
-  __CONDITION_ERROR((el != NULL), "vector_element", "Bad indexed search");
-  return el;
+  return v->lista[indice];
 }
 
-unsigned int vector_search(Vector v, void *el,
-                           int (*cmp)(const void *a, const void *b)) {
-  __CONDITION_ERROR((v != NULL), "vector_search", "Vector is NULL");
-  __CONDITION_ERROR((el != NULL), "vector_search", "Element is NULL");
+unsigned int vector_busqueda(Vector v, void *el,
+                             int (*cmp)(const void *a, const void *b)) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_busqueda", "Vector es NULL");
+  __ERROR_CONDICIONAL(el != NULL, "vector_busqueda", "Elemento es NULL");
 
-  unsigned int idx = v->size;
-  for (unsigned int i = 0; i < v->size; i++) {
-    if (cmp(v->array[i], el) == 0) {
-      idx = i;
+  unsigned int indice = v->tamano;
+  for (unsigned int i = 0; i < v->tamano; i++) {
+    if (!cmp(v->lista[i], el)) {
+      indice = i;
       break;
     }
   }
 
-  __CONDITION_ERROR((idx == vector_size(v) || cmp(v->array[idx], el) == 0),
-                    "vector_search", "Bad search");
-  return idx;
+  __ERROR_CONDICIONAL(indice == v->tamano || !cmp(v->lista[indice], el),
+                      "vector_busqueda", "Error interno");
+  return indice;
 }
 
-unsigned int vector_sorted_search(Vector v, void *el,
-                                  int (*cmp)(const void *a, const void *b)) {
-  __CONDITION_ERROR((v != NULL), "vector_sorted_search", "Vector is NULL");
-  __CONDITION_ERROR((el != NULL), "vector_sorted_search", "Element is NULL");
+unsigned int vector_busqueda_ordenada(Vector v, void *el,
+                                      int (*cmp)(const void *a,
+                                                 const void *b)) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_busqueda_ordenada", "Vector es NULL");
+  __ERROR_CONDICIONAL(el != NULL, "vector_busqueda_ordenada",
+                      "Elemento es NULL");
 
-  unsigned int idx = v->size;
-  unsigned int left = 0, right = v->size;
-  while (left + 1 < right) {
-    unsigned int middle = (left + right) / 2;
-    int cmp_result = cmp(v->array[middle], el);
-    if (cmp_result == 0) {
-      idx = middle;
+  unsigned int indice = v->tamano;
+  unsigned int izq = 0, der = v->tamano;
+  while (izq + 1 < der) {
+    unsigned int med = (izq + der) / 2;
+    int cmp_resultado = cmp(v->lista[med], el);
+    if (!cmp_resultado) {
+      indice = med;
       break;
-
-    } else if (cmp_result < 0) {
-      left = middle;
-
-    } else {
-      right = middle;
-    }
+    } else if (cmp_resultado < 0)
+      izq = med;
+    else
+      der = med;
   }
-  if (cmp(v->array[left], el) == 0) {
-    idx = left;
-  }
+  if (!cmp(v->lista[izq], el)) indice = izq;
 
-  __CONDITION_ERROR((idx == vector_size(v) || cmp(v->array[idx], el) == 0),
-                    "vector_sorted_search", "Bad search");
-  return idx;
+  __ERROR_CONDICIONAL(indice == v->tamano || !cmp(v->lista[indice], el),
+                      "vector_busqueda_ordenada", "Error interno");
+  return indice;
 }
 
 // ------------------------ FUNCIONES MODIFICATIVAS ------------------------
 
-void vector_assign(Vector v, void *el, unsigned int idx) {
-  __CONDITION_ERROR((v != NULL), "vector_assign", "Vector is NULL");
-  __CONDITION_ERROR((el != NULL), "vector_assing", "Element is NULL");
-  __CONDITION_ERROR((idx < vector_size(v)), "vector_assign",
-                    "Overflow of index");
+void vector_asignar(Vector v, void *el, unsigned int indice) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_asignar", "Vector es NULL");
+  __ERROR_CONDICIONAL(el != NULL, "vector_asignar", "Elemento es NULL");
+  __ERROR_CONDICIONAL(indice < v->tamano, "vector_asignar",
+                      "Índice fuera de rango");
 
-  void *nw_el = create_element(el);
-  free(v->array[idx]);
-  v->array[idx] = NULL;
-  v->array[idx] = nw_el;
+  free(v->lista[indice]);
+  v->lista[indice] = el;
+
+  __ERROR_CONDICIONAL(v->lista[indice] == el, "vector_asignar",
+                      "Error interno");
+}
+
+static void merge_sort(Vector v, int (*cmp)(const void *a, const void *b),
+                       unsigned int izq, unsigned int der) {
+  if (izq < der) {
+    unsigned int med = (izq + der) / 2;
+    merge_sort(v, cmp, izq, med);
+    merge_sort(v, cmp, med + 1, der);
+
+    Vector aux = NULL;
+    aux = vector_inicializar(aux);
+    unsigned int i = izq, j = med + 1;
+    while (i <= med && j <= der) {
+      if (cmp(v->lista[i], v->lista[j]) <= 0)
+        vector_encolar(aux, v->lista[i++]);
+      else
+        vector_encolar(aux, v->lista[j++]);
+    }
+    while (i <= med) vector_encolar(aux, v->lista[i++]);
+    while (j <= der) vector_encolar(aux, v->lista[j++]);
+
+    __ERROR_CONDICIONAL(
+        i == med + 1 && j == der + 1 && aux->tamano == der - izq + 1,
+        "vector_ordenar", "Error interno");
+
+    for (unsigned int w = 0; w < aux->tamano; w++)
+      v->lista[w + izq] = aux->lista[w];
+
+    free(aux->lista);
+    free(aux);
+    aux = NULL;
+  }
+}
+
+void vector_ordenar(Vector v, int (*cmp)(const void *a, const void *b)) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_ordenar", "Vector es NULL");
+
+  merge_sort(v, cmp, 0, v->tamano - 1);
 }
 
 // ------------------------ FUNCIONES DE ELIMINACIÓN ------------------------
 
-void vector_pop_back(Vector v) {
-  __CONDITION_ERROR((v != NULL), "vector_pop_back", "Vector is NULL");
-  __CONDITION_ERROR((!vector_is_empty(v)), "vector_pop_back",
-                    "Vector is empty");
+void vector_eliminar_ultimo(Vector v) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_eliminar_ultimo", "Vector es NULL");
+  __ERROR_CONDICIONAL(v->tamano != 0, "vector_eliminar_ultimo",
+                      "Vector está vacío");
 
-  free(v->array[v->size - 1]);
-  v->array[v->size - 1] = NULL;
-  v->size--;
+  free(v->lista[v->tamano - 1]);
+  v->lista[v->tamano - 1] = NULL;
+  v->tamano--;
 }
 
-void vector_erase(Vector v, unsigned int idx) {
-  __CONDITION_ERROR((v != NULL), "vector_erase", "Vector is NULL");
-  __CONDITION_ERROR((!vector_is_empty(v)), "vector_erase", "Vector is empty");
-  __CONDITION_ERROR((idx < vector_size(v)), "vector_erase",
-                    "Overflow of index");
+void vector_eliminar(Vector v, unsigned int indice) {
+  __ERROR_CONDICIONAL(v != NULL, "vector_eliminar", "Vector es NULL");
+  __ERROR_CONDICIONAL(v->tamano != 0, "vector_eliminar", "Vector está vacío");
+  __ERROR_CONDICIONAL(indice < v->tamano, "vector_eliminar",
+                      "Índice fuera de rango");
 
-  free(v->array[idx]);
-  v->array[idx] = NULL;
-  for (unsigned int i = idx; i < v->size - 1; i++) {
-    v->array[i] = v->array[i + 1];
+  free(v->lista[indice]);
+  for (unsigned int i = indice; i < v->tamano - 1; i++) {
+    v->lista[i] = v->lista[i + 1];
   }
-  v->array[v->size - 1] = NULL;
+  v->lista[v->tamano - 1] = NULL;
 
-  v->size--;
-}
-
-// ------------------------ FUNCIONES DE ORDENAMIENTO ------------------------
-
-static void merge_sort(Vector v, int (*cmp)(const void *a, const void *b),
-                       unsigned int left, unsigned int right) {
-  if (left < right) {
-    unsigned int middle = left + (right - left) / 2;
-    merge_sort(v, cmp, left, middle);
-    merge_sort(v, cmp, middle + 1, right);
-
-    Vector aux = NULL;
-    aux = vector_initialize(aux);
-    unsigned int i = left, j = middle + 1;
-    while (i <= middle && j <= right) {
-      if (cmp(v->array[i], v->array[j]) <= 0) {
-        vector_push_back(aux, v->array[i]);
-        i++;
-      } else {
-        vector_push_back(aux, v->array[j]);
-        j++;
-      }
-    }
-    while (i <= middle) {
-      vector_push_back(aux, v->array[i]);
-      i++;
-    }
-    while (j <= right) {
-      vector_push_back(aux, v->array[j]);
-      j++;
-    }
-
-    for (unsigned int idx = 0; idx < aux->size; idx++) {
-      vector_assign(v, aux->array[idx], idx + left);
-    }
-
-    vector_free(aux);
-
-    __CONDITION_ERROR((i == middle + 1 && j == right + 1), "merge_sort",
-                      "Bad sorting");
-  }
-}
-
-void vector_merge_sort(Vector v, int (*cmp)(const void *a, const void *b)) {
-  __CONDITION_ERROR((v != NULL), "vector_merge_sort", "Vector is NULL");
-
-  merge_sort(v, cmp, 0, v->size - 1);
+  v->tamano--;
 }
