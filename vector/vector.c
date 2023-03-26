@@ -40,6 +40,7 @@ void vector_encolar(Vector v, void *el) {
     v->capacidad *= 2;
     v->lista = realloc(v->lista, v->capacidad * sizeof(el));
   }
+  __ERROR_CONDICIONAL(v->lista != NULL, "vector_encolar", "Error con Malloc");
   v->lista[v->tamano] = el;
   v->tamano++;
 
