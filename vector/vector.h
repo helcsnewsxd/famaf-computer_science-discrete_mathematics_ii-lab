@@ -1,7 +1,8 @@
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
-// ------------------------ LIBRERIAS (USADAS PARA LOS TIPOS) ------------------------
+// ------------------------ LIBRERIAS (USADAS PARA LOS TIPOS)
+// ------------------------
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -10,6 +11,10 @@
 
 struct VectorSt;
 
+/**
+ * @brief Estructura de datos tipo lista cuyos elementos deben ser estáticos (no
+ * debe ser un struct con punteros)
+ */
 typedef struct VectorSt *Vector;
 
 // ------------------------ FUNCIONES CONSTRUCTIVAS ------------------------
@@ -25,8 +30,8 @@ typedef struct VectorSt *Vector;
 Vector vector_initialize(Vector v);
 
 /**
- * @brief Vector inicialization (create the structure and allocate needed
- * memory) -> creates n elements equals to el
+ * @brief Inicialización del vector (crea la estructura y reserva la memoria
+ * necesaria) -> crea n elementos iguales a "el"
  * @param v
  * @param n
  * @param el
@@ -37,7 +42,8 @@ Vector vector_initialize(Vector v);
 Vector vector_initialize_with_elements(Vector v, unsigned int n, void *el);
 
 /**
- * @brief Inserta un elemento al final del array del vector (la estructura genera una copia del vector)
+ * @brief Inserta un elemento al final del array del vector (la estructura
+ * genera una copia del vector)
  * @param v
  * @param el
  * @pre v != NULL && el != NULL
@@ -73,7 +79,8 @@ bool vector_is_empty(Vector v);
 size_t vector_size(Vector v);
 
 /**
- * @brief Devuelve el elemento del array indexado en idx del vector v (devuelve una copia)
+ * @brief Devuelve el elemento del array indexado en idx del vector v (devuelve
+ * una copia)
  * @param v
  * @param idx
  * @return Puntero a una copia del elemento
@@ -87,7 +94,8 @@ void *vector_element(Vector v, unsigned int idx);
  * @param v
  * @param el
  * @param cmp
- * @return Índice del elemento en el array del vector o vector_size(v) caso contrario
+ * @return Índice del elemento en el array del vector o vector_size(v) caso
+ * contrario
  * @pre v != NULL && el != NULL
  * @post idx == vector_size(v) || cmp(vector_element(v, idx), el) == 0
  */
@@ -95,11 +103,13 @@ unsigned int vector_search(Vector v, void *el,
                            int (*cmp)(const void *a, const void *b));
 
 /**
- * @brief Busca con complejidad O(N) un elemento el en el vector. Supone que el array de v está ordenado
+ * @brief Busca con complejidad O(N) un elemento el en el vector. Supone que el
+ * array de v está ordenado
  * @param v
  * @param el
  * @param cmp
- * @return Índice del elemento en el array del vector o vector_size(v) caso contrario
+ * @return Índice del elemento en el array del vector o vector_size(v) caso
+ * contrario
  * @pre v != NULL && el != NULL && v is sorted (with cmp function)
  * @post idx == vector_size(v) || cmp(vector_element(v, idx), el) == 0
  */
@@ -109,7 +119,8 @@ unsigned int vector_sorted_search(Vector v, void *el,
 // ------------------------ FUNCIONES MODIFICATIVAS ------------------------
 
 /**
- * @brief Asigna un elemento el a la posición idx del arreglo del vector (usa una copia de el)
+ * @brief Asigna un elemento el a la posición idx del arreglo del vector (usa
+ * una copia de el)
  * @param v
  * @param el
  * @param idx
@@ -128,7 +139,8 @@ void vector_assign(Vector v, void *el, unsigned int idx);
 void vector_pop_back(Vector v);
 
 /**
- * @brief Elimina con una complejidad O(N) un elemento en la posición idx del arreglo del vector v
+ * @brief Elimina con una complejidad O(N) un elemento en la posición idx del
+ * arreglo del vector v
  * @param v
  * @param idx
  * @pre v != NULL && !vector_is_empty(v) && idx < vector_size(v)
