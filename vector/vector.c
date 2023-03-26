@@ -6,7 +6,7 @@
 
 #include "../errors/error.h"
 
-// ------------------------ AUXILIAR FUNCTIONS ------------------------
+// ------------------------ FUNCIONES AUXILIARES ------------------------
 
 static void *create_element(void *el) {
   __CONDITION_ERROR((el != NULL), "create_element", "Element is NULL");
@@ -21,14 +21,14 @@ static void *create_element(void *el) {
   return nw_el;
 }
 
-// ------------------------ STRUCTURE ------------------------
+// ------------------------ ESTRUCTURA ------------------------
 
 struct VectorSt {
   size_t size, capacity;
   void **array;
 };
 
-// ------------------------ CONSTRUCTIVE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES CONSTRUCTIVAS ------------------------
 
 Vector vector_initialize(Vector v) {
   __CONDITION_ERROR((v == NULL), "vector_initialize", "Vector doesn't NULL");
@@ -76,7 +76,7 @@ void vector_push_back(Vector v, void *el) {
   v->size++;
 }
 
-// ------------------------ DESTRUCTIVE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES DESTRUCTIVAS ------------------------
 
 void vector_free(Vector v) {
   if ((v != NULL)) {
@@ -93,7 +93,7 @@ void vector_free(Vector v) {
   __CONDITION_ERROR((v == NULL), "vector_free", "Bad free of vector");
 }
 
-// ------------------------ INFORMATIVE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES DE INFORMACIÓN ------------------------
 
 bool vector_is_empty(Vector v) {
   __CONDITION_ERROR((v != NULL), "vector_is_empty", "Vector is NULL");
@@ -166,7 +166,7 @@ unsigned int vector_sorted_search(Vector v, void *el,
   return idx;
 }
 
-// ------------------------ MODIFICATIVE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES MODIFICATIVAS ------------------------
 
 void vector_assign(Vector v, void *el, unsigned int idx) {
   __CONDITION_ERROR((v != NULL), "vector_assign", "Vector is NULL");
@@ -180,7 +180,7 @@ void vector_assign(Vector v, void *el, unsigned int idx) {
   v->array[idx] = nw_el;
 }
 
-// ------------------------ ERASE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES DE ELIMINACIÓN ------------------------
 
 void vector_pop_back(Vector v) {
   __CONDITION_ERROR((v != NULL), "vector_pop_back", "Vector is NULL");
@@ -208,7 +208,7 @@ void vector_erase(Vector v, unsigned int idx) {
   v->size--;
 }
 
-// ------------------------ SORT FUNCTIONS ------------------------
+// ------------------------ FUNCIONES DE ORDENAMIENTO ------------------------
 
 static void merge_sort(Vector v, int (*cmp)(const void *a, const void *b),
                        unsigned int left, unsigned int right) {
