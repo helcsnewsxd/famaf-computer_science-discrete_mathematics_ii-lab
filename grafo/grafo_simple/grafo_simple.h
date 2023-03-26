@@ -4,7 +4,7 @@
 // --------------------- LIBRERÍAS (USADAS POR TIPOS O TAD)
 // ---------------------
 
-#include "../vector/vector.h"
+#include "../../vector/vector.h"
 
 // --------------------- ESTRUCTURAS DE DATOS ---------------------
 

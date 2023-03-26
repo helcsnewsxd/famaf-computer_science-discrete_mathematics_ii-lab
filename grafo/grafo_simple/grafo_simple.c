@@ -2,8 +2,8 @@
 
 #include <stdio.h>
 
-#include "../errors/error.h"
-#include "../vector/vector.h"
+#include "../../errors/error.h"
+#include "../../vector/vector.h"
 
 // --------------------- ESTRUCTURAS DE DATOS ---------------------
 
