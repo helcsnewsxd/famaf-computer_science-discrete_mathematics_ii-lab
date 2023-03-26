@@ -9,8 +9,6 @@
 
 // ------------------------ ESTRUCTURA ------------------------
 
-struct VectorSt;
-
 /**
  * @brief Estructura de datos tipo lista cuyos elementos deben ser estáticos (no
  * debe ser un struct con punteros)
