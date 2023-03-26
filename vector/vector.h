@@ -1,24 +1,24 @@
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
-// ------------------------ LIBRARIES (USED FOR TYPES) ------------------------
+// ------------------------ LIBRERIAS (USADAS PARA LOS TIPOS) ------------------------
 
 #include <stdbool.h>
 #include <stdio.h>
 
-// ------------------------ STRUCTURE ------------------------
+// ------------------------ ESTRUCTURA ------------------------
 
 struct VectorSt;
 
 typedef struct VectorSt *Vector;
 
-// ------------------------ CONSTRUCTIVE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES CONSTRUCTIVAS ------------------------
 
 /**
- * @brief Vector inicialization (create the structure and allocate needed
- * memory)
+ * @brief Inicialización del vector (crea la estructura y reserva la
+ * memoria necesaria)
  * @param v
- * @return Vector initialized
+ * @return Vector inicializado
  * @pre v == NULL
  * @post v != NULL
  */
@@ -30,15 +30,14 @@ Vector vector_initialize(Vector v);
  * @param v
  * @param n
  * @param el
- * @return Vector initialized with n elements equal to el (copy of it)
+ * @return Vector inicializado con n elementos iguales a el (copia del mismo)
  * @pre v == NULL
  * @post v != NULL
  */
 Vector vector_initialize_with_elements(Vector v, unsigned int n, void *el);
 
 /**
- * @brief Push a element in the end of the vector (the structure generates a
- * copy of the element)
+ * @brief Inserta un elemento al final del array del vector (la estructura genera una copia del vector)
  * @param v
  * @param el
  * @pre v != NULL && el != NULL
@@ -46,49 +45,49 @@ Vector vector_initialize_with_elements(Vector v, unsigned int n, void *el);
  */
 void vector_push_back(Vector v, void *el);
 
-// ------------------------ DESTRUCTIVE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES DESTRUCTIVAS ------------------------
 
 /**
- * @brief Free and erase all the structure and memory used (only local)
+ * @brief Libera y elimina toda la memoria utilizada por el vector v
  * @param v
  * @post v == NULL
  */
 void vector_free(Vector v);
 
-// ------------------------ INFORMATIVE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES INFORMATIVAS ------------------------
 
 /**
- * @brief Check if the vector is empty
+ * @brief Verifica si el array del vector v no tiene elementos
  * @param v
- * @return True if the vector is empty (0 elements) and False otherwise
+ * @return True si el vector esta vacío (0 elementos) y False caso contrario
  * @pre v != NULL
  */
 bool vector_is_empty(Vector v);
 
 /**
- * @brief Calculate the size of the vector
+ * @brief Calcula el tamaño del vector
  * @param v
- * @return Size of the vector
+ * @return Tamaño del vector
  * @pre v != NULL
  */
 size_t vector_size(Vector v);
 
 /**
- * @brief Element with index idx into the vector (returns a copy)
+ * @brief Devuelve el elemento del array indexado en idx del vector v (devuelve una copia)
  * @param v
  * @param idx
- * @return Pointer to a copy of the element
+ * @return Puntero a una copia del elemento
  * @pre v != NULL && idx < vector_size(v)
  * @post el != NULL
  */
 void *vector_element(Vector v, unsigned int idx);
 
 /**
- * @brief Search with O(N) complexity an element into the vector
+ * @brief Busca con complejidad O(N) un elemento el en el vector
  * @param v
  * @param el
  * @param cmp
- * @return Index of the element or vector_size(v) otherwise
+ * @return Índice del elemento en el array del vector o vector_size(v) caso contrario
  * @pre v != NULL && el != NULL
  * @post idx == vector_size(v) || cmp(vector_element(v, idx), el) == 0
  */
@@ -96,22 +95,21 @@ unsigned int vector_search(Vector v, void *el,
                            int (*cmp)(const void *a, const void *b));
 
 /**
- * @brief Search with O(logN) complexity an element into the vector
+ * @brief Busca con complejidad O(N) un elemento el en el vector. Supone que el array de v está ordenado
  * @param v
  * @param el
  * @param cmp
- * @return Index of the element or vector_size(v) otherwise
+ * @return Índice del elemento en el array del vector o vector_size(v) caso contrario
  * @pre v != NULL && el != NULL && v is sorted (with cmp function)
  * @post idx == vector_size(v) || cmp(vector_element(v, idx), el) == 0
  */
 unsigned int vector_sorted_search(Vector v, void *el,
                                   int (*cmp)(const void *a, const void *b));
 
-// ------------------------ MODIFICATIVE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES MODIFICATIVAS ------------------------
 
 /**
- * @brief Assign element el to position idx of the vector (the structure use a
- * copy of the element)
+ * @brief Asigna un elemento el a la posición idx del arreglo del vector (usa una copia de el)
  * @param v
  * @param el
  * @param idx
@@ -120,27 +118,27 @@ unsigned int vector_sorted_search(Vector v, void *el,
  */
 void vector_assign(Vector v, void *el, unsigned int idx);
 
-// ------------------------ ERASE FUNCTIONS ------------------------
+// ------------------------ FUNCIONES DE ELIMINACIÓN ------------------------
 
 /**
- * @brief Erase an element from the end of the vector
+ * @brief Elimina un elemento del array del vector v
  * @param v
  * @pre v != NULL && !vector_is_empty(v)
  */
 void vector_pop_back(Vector v);
 
 /**
- * @brief Erase with O(N) complexity an element in position idx of the vector
+ * @brief Elimina con una complejidad O(N) un elemento en la posición idx del arreglo del vector v
  * @param v
  * @param idx
  * @pre v != NULL && !vector_is_empty(v) && idx < vector_size(v)
  */
 void vector_erase(Vector v, unsigned int idx);
 
-// ------------------------ SORT FUNCTIONS ------------------------
+// ------------------------ FUNCIONES DE ORDENAMIENTO ------------------------
 
 /**
- * @brief Sort with O(NlogN) complexity the vector
+ * @brief Ordena con una complejidad de O(NlogN) el array del vector v
  * @param v
  * @param cmp
  * @pre v != NULL
