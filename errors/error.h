@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define __CONDITION_ERROR(cond, pl, s)             \
-  if (!(cond)) {                                   \
+#define __ERROR_CONDICIONAL(cond, pl, s)         \
+  if (!(cond)) {                                 \
     fprintf(stderr, "Error en %s: %s\n", pl, s); \
-    exit(EXIT_FAILURE);                            \
+    exit(EXIT_FAILURE);                          \
   }
 
 #endif
