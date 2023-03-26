@@ -6,7 +6,7 @@
 
 #define __CONDITION_ERROR(cond, pl, s)             \
   if (!(cond)) {                                   \
-    fprintf(stderr, "Error into %s: %s\n", pl, s); \
+    fprintf(stderr, "Error en %s: %s\n", pl, s); \
     exit(EXIT_FAILURE);                            \
   }
 
