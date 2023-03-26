@@ -44,6 +44,35 @@ GrafoSimple grafo_simple_inicializar(unsigned int cnt_vertices) {
   return gs;
 }
 
+void grafo_simple_anadir_arista(GrafoSimple gs, unsigned int i,
+                                unsigned int j) {
+  __ERROR_CONDICIONAL(gs != NULL, "grafo_simple_anadir_arista",
+                      "Grafo es NULL");
+  __ERROR_CONDICIONAL(i < gs->n && j < gs->n, "grafo_simple_anadir_arista",
+                      "Índice fuera de rango");
+
+  NodoSimple xi = vector_elemento(gs->nodos, i),
+             xj = vector_elemento(gs->nodos, j);
+
+  unsigned int *vecI = malloc(sizeof(unsigned int)),
+               *vecJ = malloc(sizeof(unsigned int));
+  *vecI = j;
+  *vecJ = i;
+  vector_encolar(xi->vecinos, vecI);
+  vector_encolar(xj->vecinos, vecJ);
+
+  xi->grado++;
+  xj->grado++;
+
+  if (gs->Delta < xi->grado) gs->Delta = xi->grado;
+  if (gs->Delta < xj->grado) gs->Delta = xj->grado;
+
+  gs->m++;
+
+  __ERROR_CONDICIONAL(gs->m >= 1, "grafo_simple_anadir_arista",
+                      "Error interno");
+}
+
 // --------------------- FUNCIONES DESTRUCTORAS ---------------------
 
 void grafo_simple_liberar(GrafoSimple gs) {
@@ -99,35 +128,4 @@ unsigned int grafo_simple_grado_nodo(GrafoSimple gs, unsigned int indice) {
 
   NodoSimple x = vector_elemento(gs->nodos, indice);
   return x->grado;
-}
-
-// --------------------- FUNCIONES MODIFICATIVAS ---------------------
-
-void grafo_simple_anadir_arista(GrafoSimple gs, unsigned int i,
-                                unsigned int j) {
-  __ERROR_CONDICIONAL(gs != NULL, "grafo_simple_anadir_arista",
-                      "Grafo es NULL");
-  __ERROR_CONDICIONAL(i < gs->n && j < gs->n, "grafo_simple_anadir_arista",
-                      "Índice fuera de rango");
-
-  NodoSimple xi = vector_elemento(gs->nodos, i),
-             xj = vector_elemento(gs->nodos, j);
-
-  unsigned int *vecI = malloc(sizeof(unsigned int)),
-               *vecJ = malloc(sizeof(unsigned int));
-  *vecI = j;
-  *vecJ = i;
-  vector_encolar(xi->vecinos, vecI);
-  vector_encolar(xj->vecinos, vecJ);
-
-  xi->grado++;
-  xj->grado++;
-
-  if (gs->Delta < xi->grado) gs->Delta = xi->grado;
-  if (gs->Delta < xj->grado) gs->Delta = xj->grado;
-
-  gs->m++;
-
-  __ERROR_CONDICIONAL(gs->m >= 1, "grafo_simple_anadir_arista",
-                      "Error interno");
 }

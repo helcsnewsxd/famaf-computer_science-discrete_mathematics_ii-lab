@@ -25,6 +25,17 @@ typedef struct GrafoSimpleSt* GrafoSimple;
  */
 GrafoSimple grafo_simple_inicializar(unsigned int cnt_vertices);
 
+/**
+ * @brief Añade la arista entre los nodos i, j
+ * @param gs
+ * @param i
+ * @param j
+ * @pre gs != NULL && i < grafo_simple_cnt_nodos(gs) && j <
+ * grafo_simple_cnt_nodos(gs)
+ * @post grafo_simple_cnt_aristas(gs) >= 1
+ */
+void grafo_simple_anadir_arista(GrafoSimple gs, unsigned int i, unsigned int j);
+
 // --------------------- FUNCIONES DESTRUCTORAS ---------------------
 
 /**
@@ -80,18 +91,5 @@ Vector grafo_simple_vecinos_nodo(GrafoSimple gs, unsigned int indice);
  * @pre gs != NULL && indice < grafo_simple_cnt_nodos(gs)
  */
 unsigned int grafo_simple_grado_nodo(GrafoSimple gs, unsigned int indice);
-
-// --------------------- FUNCIONES MODIFICATIVAS ---------------------
-
-/**
- * @brief Añade la arista entre los nodos i, j
- * @param gs
- * @param i
- * @param j
- * @pre gs != NULL && i < grafo_simple_cnt_nodos(gs) && j <
- * grafo_simple_cnt_nodos(gs)
- * @post grafo_simple_cnt_aristas(gs) >= 1
- */
-void grafo_simple_anadir_arista(GrafoSimple gs, unsigned int i, unsigned int j);
 
 #endif
