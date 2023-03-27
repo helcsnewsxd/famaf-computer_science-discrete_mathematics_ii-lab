@@ -72,12 +72,10 @@ Grafo ConstruirGrafo() {
       u32* lado1_aux = malloc(sizeof(u32));
       u32* lado2_aux = malloc(sizeof(u32));
 
-      sscanf(buffer + 2, "%u%*[ ]%u", &(*lado1), &(*lado2));
-
       memcpy(lado1_aux, lado1, sizeof(u32));
       memcpy(lado2_aux, lado2, sizeof(u32));
 
-      // Chequeo que el vértice a ingresar no exista ya en mi lista de nodos
+      // Agregas vértice en la lista de nodos
       vector_encolar(nombre_nodos_viejo, lado1);
       vector_encolar(nombre_nodos_viejo, lado2);
       vector_encolar(aristas, lado1_aux);
@@ -140,7 +138,9 @@ u32 Delta(Grafo G) { return grafo_Delta(G); }
 // ------------------------
 
 u32 Nombre(u32 i, Grafo G) { return grafo_nombre_nodo(G, i); }
+
 u32 Grado(u32 i, Grafo G) { return grafo_grado_nodo(G, i); }
+
 u32 IndiceVecino(u32 j, u32 i, Grafo G) {
   return grafo_vecino_jesimo_nodo(G, i, j);
 }
