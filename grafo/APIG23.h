@@ -5,10 +5,10 @@
 #include <stdlib.h>
 
 // el .h de abajo debe tener definida GrafoSt y u32.
-#include "../grafo/grafo_con_nombre/EstructuraGrafo23.h"
-#include "../grafo/grafo_simple/grafo_simple.h"
+#include "grafo_con_nombre/EstructuraGrafo23.h"
 
-// Grafo es un puntero a una estructura GrafoSt, la cual debe estar definida en el .h de arriba
+// Grafo es un puntero a una estructura GrafoSt, la cual debe estar definida en
+// el .h de arriba
 typedef struct GrafoSt *Grafo;
 
 // construcci'on/destrucci'on
@@ -18,7 +18,8 @@ Grafo ConstruirGrafo();
 
 void DestruirGrafo(Grafo G);
 
-// funciones para extraer datos del grafo. u32 debe estar definida en el .h de arriba
+// funciones para extraer datos del grafo. u32 debe estar definida en el .h de
+// arriba
 
 u32 NumeroDeVertices(Grafo G);
 u32 NumeroDeLados(Grafo G);
