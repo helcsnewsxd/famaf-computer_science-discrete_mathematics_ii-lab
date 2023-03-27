@@ -18,27 +18,6 @@ static int cmp(const void* a, const void* b) {
   return 0;
 }
 
-void grafo_print(Grafo g) {
-  u32 n = NumeroDeVertices(g);
-
-  printf("Cantidad de nodos: %u\nCantidad de aristas: %u\nDelta: %u\nNodos:\n",
-         n, NumeroDeLados(g), Delta(g));
-
-  for (u32 i = 0; i < n; i++) {
-    printf("    Nombre: %u\n", Nombre(i, g));
-
-    u32 sz = Grado(i, g);
-    printf("    Grado: %u\nVecinos: ", sz);
-
-    for (u32 j = 0; j < sz; j++) {
-      u32 x = IndiceVecino(j, i, g);
-      u32 y = Nombre(x, g);
-      printf("(%u, %u) ", x, y);
-    }
-    printf("\n================\n");
-  }
-}
-
 // ------------------------ FUNCIONES CONSTRUCTIVAS ------------------------
 
 Grafo ConstruirGrafo() {
@@ -143,15 +122,4 @@ u32 Grado(u32 i, Grafo G) { return grafo_grado_nodo(G, i); }
 
 u32 IndiceVecino(u32 j, u32 i, Grafo G) {
   return grafo_vecino_jesimo_nodo(G, i, j);
-}
-
-// ------------------------ MAIN TESTING ------------------------
-
-int main(void) {
-  Grafo g = NULL;
-  g = ConstruirGrafo();
-  grafo_print(g);
-  DestruirGrafo(g);
-
-  return 0;
 }
