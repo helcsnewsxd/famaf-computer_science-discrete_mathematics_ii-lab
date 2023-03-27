@@ -90,8 +90,8 @@ unsigned int vector_busqueda(Vector v, void *el,
                              int (*cmp)(const void *a, const void *b));
 
 /**
- * @brief Busca con complejidad O(N) un elemento "el" en el vector. Supone que
- * el vector ya está ordenado
+ * @brief Busca con complejidad O(logN) un elemento "el" en el vector. Supone
+ * que el vector ya está ordenado
  * @param v
  * @param el
  * @param cmp
