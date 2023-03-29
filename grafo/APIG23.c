@@ -37,8 +37,8 @@ Grafo ConstruirGrafo() {
 
   Grafo g = NULL;
   while (fgets(buffer, sizeof(buffer), stdin) != NULL) {
-    if (strncmp(buffer, "p edge", 6) == 0) {
-      sscanf(buffer + 6, "%u%*[ ]%u", &cant_vertices, &cant_aristas);
+    if (strncmp(buffer, "p edge ", 7) == 0) {
+      sscanf(buffer + 7, "%u%*[ ]%u", &cant_vertices, &cant_aristas);
       continue;
     } else if (buffer[0] == 'c' || buffer[0] == '0') {
       continue;
@@ -63,8 +63,19 @@ Grafo ConstruirGrafo() {
       if (cant_aristas_leidas == cant_aristas) {
         break;
       }
+    } else {
+      if (cant_aristas_leidas == 0) {
+        free(nombre_nodos_viejo);
+        free(aristas);
+        return NULL;
+      } else {
+        vector_liberar(nombre_nodos_viejo);
+        vector_liberar(aristas);
+        return NULL;
+      }
     }
   }
+  
 
   // Contiene nombre de los nodos
   Vector nombre_nodos_nuevo = NULL;
