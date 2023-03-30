@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../errors/error.h"
 
 #include "../vector/vector.h"
 
@@ -42,7 +43,7 @@ Grafo ConstruirGrafo() {
       continue;
     } else if (buffer[0] == 'c' || buffer[0] == '0') {
       continue;
-    } else if (buffer[0] == 'e') {
+    } else if (strncmp(buffer, "e ", 2) == 0) {
       u32* lado1 = malloc(sizeof(u32));
       u32* lado2 = malloc(sizeof(u32));
 
@@ -64,15 +65,8 @@ Grafo ConstruirGrafo() {
         break;
       }
     } else {
-      if (cant_aristas_leidas == 0) {
-        free(nombre_nodos_viejo);
-        free(aristas);
-        return NULL;
-      } else {
-        vector_liberar(nombre_nodos_viejo);
-        vector_liberar(aristas);
-        return NULL;
-      }
+      __ERROR_INPUT_GRAFO(cant_aristas_leidas != 0, "Línea con formato inválido.\n");
+      __ERROR_INPUT_GRAFO(false, "Mala la lectura de aristas. Cantidad insuficiente para la construcción del grafo.\n");
     }
   }
   
