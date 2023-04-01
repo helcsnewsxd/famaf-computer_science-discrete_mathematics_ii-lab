@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 // el .h de abajo debe tener definida GrafoSt y u32.
-#include "grafo_con_nombre/EstructuraGrafo23.h"
+#include "EstructuraGrafo23.h"
 
 // Grafo es un puntero a una estructura GrafoSt, la cual debe estar definida en
 // el .h de arriba

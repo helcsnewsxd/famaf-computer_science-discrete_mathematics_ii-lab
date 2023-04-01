@@ -8,7 +8,27 @@
 #include "../errors/error.h"
 #include "../vector/vector.h"
 
-// ------------------------ FUNCIONES AUXILIARES ------------------------
+// ------------------------ FUNCIONES Y ESTRUCTURAS AUXILIARES
+// ------------------------
+
+struct pair {
+  u32 first;
+  u32 second;
+};
+typedef struct pair Pair;
+
+static int cmp_pair(const void* a, const void* b) {
+  Pair valA = *((Pair*)a), valB = *((Pair*)b);
+  if (valA.first < valB.first)
+    return -1;
+  else if (valA.first > valB.first)
+    return 1;
+  else if (valA.second < valB.second)
+    return -1;
+  else if (valA.second > valB.second)
+    return 1;
+  return 0;
+}
 
 static int cmp(const void* a, const void* b) {
   u32 valA = *((int*)a), valB = *((int*)b);
@@ -49,17 +69,19 @@ Grafo ConstruirGrafo() {
 
       sscanf(buffer + 2, "%u%*[ ]%u", &(*lado1), &(*lado2));
 
-      u32* lado1_aux = malloc(sizeof(u32));
-      u32* lado2_aux = malloc(sizeof(u32));
-
-      memcpy(lado1_aux, lado1, sizeof(u32));
-      memcpy(lado2_aux, lado2, sizeof(u32));
+      Pair* nueva_arista = malloc(sizeof(Pair));
+      if (*lado1 < *lado2) {
+        nueva_arista->first = *lado1;
+        nueva_arista->second = *lado2;
+      } else {
+        nueva_arista->first = *lado2;
+        nueva_arista->second = *lado1;
+      }
 
       // Agregas vértice en la lista de nodos
       vector_encolar(nombre_nodos_viejo, lado1);
       vector_encolar(nombre_nodos_viejo, lado2);
-      vector_encolar(aristas, lado1_aux);
-      vector_encolar(aristas, lado2_aux);
+      vector_encolar(aristas, nueva_arista);
       cant_aristas_leidas++;
       if (cant_aristas_leidas == cant_aristas) {
         break;
@@ -91,16 +113,31 @@ Grafo ConstruirGrafo() {
       vector_encolar(nombre_nodos_nuevo, elem_copy);
     }
   }
-
   // Libero vector auxiliar de nodos
   vector_liberar(nombre_nodos_viejo);
+
   // Inicializo grafo
   g = grafo_inicializar(cant_vertices, nombre_nodos_nuevo);
+
   // Agrego aristas usando el vector auxiliar aristas
-  for (u32 i = 0; i < vector_tamano(aristas); i = i + 2) {
-    grafo_anadir_arista(g, *((u32*)vector_elemento(aristas, i)),
-                        *((u32*)vector_elemento(aristas, i + 1)));
+  vector_ordenar(aristas, cmp_pair);
+  u32* ind_act = malloc(sizeof(u32));
+  *ind_act = 0;
+
+  u32 aristas_tam = vector_tamano(aristas);
+  for (u32 i = 0; i < aristas_tam; i++) {
+    Pair* arista = vector_elemento(aristas, i);
+    u32 ind1 = *ind_act;
+    u32 ind2 =
+        vector_busqueda_ordenada(nombre_nodos_nuevo, &(arista->second), cmp);
+
+    if (arista->first != *(u32*)vector_elemento(nombre_nodos_nuevo, *ind_act))
+      ind1 = *ind_act =
+          vector_busqueda_ordenada(nombre_nodos_nuevo, &(arista->first), cmp);
+
+    grafo_anadir_arista(g, ind1, ind2);
   }
+  free(ind_act);
   // Libero aristas
   vector_liberar(aristas);
 

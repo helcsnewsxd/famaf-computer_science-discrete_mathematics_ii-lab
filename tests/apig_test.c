@@ -32,3 +32,11 @@ int main(void) {
 
   return 0;
 }
+
+/**
+p edge 5 4
+e 1 2
+e 2 3
+e 3 4
+e 4 5
+*/
