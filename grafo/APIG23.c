@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../errors/error.h"
 
+#include "../errors/error.h"
 #include "../vector/vector.h"
 
 // ------------------------ FUNCIONES AUXILIARES ------------------------
@@ -65,11 +65,13 @@ Grafo ConstruirGrafo() {
         break;
       }
     } else {
-      __ERROR_INPUT_GRAFO(cant_aristas_leidas != 0, "Línea con formato inválido.\n");
-      __ERROR_INPUT_GRAFO(false, "Mala la lectura de aristas. Cantidad insuficiente para la construcción del grafo.\n");
+      __ERROR_INPUT_GRAFO(cant_aristas_leidas != 0,
+                          "Línea con formato inválido.\n");
+      __ERROR_INPUT_GRAFO(false,
+                          "Mala la lectura de aristas. Cantidad insuficiente "
+                          "para la construcción del grafo.\n");
     }
   }
-  
 
   // Contiene nombre de los nodos
   Vector nombre_nodos_nuevo = NULL;
