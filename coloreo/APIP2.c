@@ -11,10 +11,6 @@
     return ERROR;                                \
   }
 
-static void SetearArray(u32* array, u32 n, u32 val) {
-  for (u32 i = 0; i < n; i++) array[i] = val;
-}
-
 static bool EsColoreoPropio(Grafo G, u32* Orden, u32* Color) {
   const u32 n = NumeroDeVertices(G);
 
@@ -33,33 +29,43 @@ static bool EsColoreoPropio(Grafo G, u32* Orden, u32* Color) {
 // Por enunciado, NO se verifica
 u32 Greedy(Grafo G, u32* Orden, u32* Color) {
   const u32 ERROR = (1LL << 32) - 1, n = NumeroDeVertices(G), d = Delta(G);
-  SetearArray(Color, n, ERROR);
+  bool *color_usado = calloc(d + 1, sizeof(bool)),
+       *vis = calloc(n, sizeof(bool));
+  __ERROR_CONDICIONAL((color_usado != NULL), "Greedy", "Error interno");
+  __ERROR_CONDICIONAL((vis != NULL), "Greedy", "Error interno");
 
-  u32 cnt_colores = 0;
+  u32 cnt_colores = 1;
+  Color[Orden[0]] = 0, vis[Orden[0]] = 1;
 
-  for (u32 indice = 0; indice < n; indice++) {
+  for (u32 indice = 1; indice < n; indice++) {
     const u32 nodo = Orden[indice], grado = Grado(nodo, G);
-    bool* color_usado = calloc(d + 1, sizeof(bool));
-    __ERROR_CONDICIONAL((color_usado != NULL), "Greedy", "Error interno");
+    vis[nodo] = 1;
+
+    u32 cnt_color_usado = 0;
+    memset(color_usado, false, cnt_colores * sizeof(bool));
 
     for (u32 indiceVec = 0; indiceVec < grado; indiceVec++) {
-      const u32 vec = IndiceVecino(indiceVec, nodo, G), color = Color[vec];
-      if (color != ERROR) color_usado[color] = 1;
+      const u32 vec = IndiceVecino(indiceVec, nodo, G);
+      if (!vis[vec]) continue;
+
+      const u32 color = Color[vec];
+      if (!color_usado[color]) cnt_color_usado++, color_usado[color] = 1;
     }
 
-    Color[nodo] = 0;
-    for (u32 color = 0; color < d + 1; color++)
-      if (!color_usado[color]) {
-        Color[nodo] = color;
-        break;
-      }
-
-    if (cnt_colores < Color[nodo] + 1) cnt_colores = Color[nodo] + 1;
-
-    free(color_usado);
-    color_usado = NULL;
+    if (cnt_color_usado == cnt_colores)
+      Color[nodo] = cnt_colores++;
+    else {
+      for (u32 color = 0; color < cnt_colores; color++)
+        if (!color_usado[color]) {
+          Color[nodo] = color;
+          break;
+        }
+    }
   }
 
+  free(color_usado), free(vis);
+  color_usado = vis = NULL;
+  __ERROR_CONDICIONAL((cnt_colores <= d + 1), "Greedy", "Error interno");
   __ERROR_CONDICIONAL((EsColoreoPropio(G, Orden, Color)), "Greedy",
                       "El coloreo NO es propio");
   return cnt_colores;
