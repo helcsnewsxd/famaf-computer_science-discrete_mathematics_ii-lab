@@ -54,8 +54,8 @@ u32 Greedy(Grafo G, u32* Orden, u32* Color) {
       const u32 vec = IndiceVecino(indiceVec, nodo, G);
       if (!vis[vec]) continue;
 
-      const u32 color = Color[vec];
-      if (!color_usado[color]) cnt_color_usado++, color_usado[color] = 1;
+      if (!color_usado[Color[vec]])
+        cnt_color_usado++, color_usado[Color[vec]] = 1;
     }
 
     if (cnt_color_usado == cnt_colores)
