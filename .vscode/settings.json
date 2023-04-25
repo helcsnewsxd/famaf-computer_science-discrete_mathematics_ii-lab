@@ -3,6 +3,7 @@
     "source.fixAll": true
   },
   "editor.formatOnSave": true,
+  "editor.tabSize": 2,
   "clang-format.executable": "/usr/bin/clang-format-12",
   "clang-format.style": "google",
   "clang-format.language.c.enable": true,
