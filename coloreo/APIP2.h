@@ -2,6 +2,7 @@
 #define __APIP2_H
 
 #include "../grafo/APIG23.h"
+// #include "../Implementacion_grupo_gonza_APIG.h/APIG23.h"
 
 // se asume que Orden y Color tienen alocadas las cantidades correctas de
 // memoria
