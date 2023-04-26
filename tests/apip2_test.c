@@ -19,19 +19,23 @@ int main(void) {
   u32 *Orden = calloc(n, sizeof(u32)), *Color = calloc(n, sizeof(u32));
   for (u32 i = 0; i < n; i++) Orden[i] = i;
   u32 cnt_col[2] = {n, 0};
+  u32 cnt_jedi = 1;
   t0 = clock();
-  for (u32 i = 0; i < 1; i++) {
+  for (u32 i = 0; i < cnt_jedi; i++) {
     cnt_col[1] = Greedy(G, Orden, Color);
     assert(cnt_col[0] >= cnt_col[1]);
     cnt_col[0] = cnt_col[1];
     OrdenJedi(G, Orden, Color);
   }
   t1 = clock();
-  printf("GREEDY CON ORDEN TARDA --> %f\n", (double)(t1 - t0) / CLOCKS_PER_SEC);
+  printf("GREEDY CON %d ORDEN JEDI TARDA --> %f\n", cnt_jedi,
+         (double)(t1 - t0) / CLOCKS_PER_SEC);
 
   free(Orden), free(Color);
   Orden = Color = NULL;
   DestruirGrafo(G);
+
+  printf("RESPUESTA --------> %d\n", cnt_col[0]);
 
   return 0;
 }
