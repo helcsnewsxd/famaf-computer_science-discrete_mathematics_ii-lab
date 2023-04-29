@@ -43,14 +43,13 @@ u32 Greedy(Grafo G, u32* Orden, u32* Color) {
   u32 cnt_colores = 1;
   Color[Orden[0]] = 0, vis[Orden[0]] = 1;
 
-
   for (u32 indice = 1; indice < n; indice++) {
     const u32 nodo = Orden[indice], grado = Grado(nodo, G);
     vis[nodo] = 1;
 
     u32 cnt_color_usado = 0;
     memset(color_usado, false, cnt_colores * sizeof(bool));
-    
+
     for (u32 indiceVec = 0; indiceVec < grado; indiceVec++) {
       const u32 vec = IndiceVecino(indiceVec, nodo, G);
       if (!vis[vec]) continue;
@@ -147,14 +146,16 @@ char OrdenJedi(Grafo G, u32* Orden, u32* Color) {
   return '0';
 }
 
-static int cmp_asc(const void *a, const void *b) {
-    return (*(u32 *)a - *(u32 *)b);
+// ------------------- ORDEN PAR IMPAR -------------------
+
+static int cmp_asc(const void* a, const void* b) {
+  return (*(u32*)a - *(u32*)b);
 }
 
 static u32* EliminaIguales(u32* arr, u32* tam) {
   u32 j = 0;
 
-  for (u32 i = 1; i < *tam; i++){
+  for (u32 i = 1; i < *tam; i++) {
     if (arr[i] != arr[j]) {
       arr[++j] = arr[i];
     }
@@ -162,7 +163,7 @@ static u32* EliminaIguales(u32* arr, u32* tam) {
 
   *tam = j + 1;
   arr = realloc(arr, (*tam) * sizeof(u32));
-  
+
   return arr;
 }
 
@@ -183,12 +184,15 @@ char OrdenImparPar(u32 n, u32* Orden, u32* Color) {
 
   // Creo los arreglos de pares e impares
   u32* pares = calloc(tamPares, sizeof(u32));
-  __ERROR_CONDICIONAL((pares != NULL), "OrdenImparPar", "Error Interno", pares, pares);
+  __ERROR_CONDICIONAL((pares != NULL), "OrdenImparPar", "Error Interno", pares,
+                      pares);
   u32* impares = calloc(tamImpares, sizeof(u32));
-  __ERROR_CONDICIONAL((impares != NULL), "OrdenImparPar", "Error Interno", impares, impares);
+  __ERROR_CONDICIONAL((impares != NULL), "OrdenImparPar", "Error Interno",
+                      impares, impares);
 
   // Lleno los arreglos de pares e impares
-  u32 j = 0; u32 k = 0;
+  u32 j = 0;
+  u32 k = 0;
   for (u32 i = 0; i < n; i++) {
     if (Color[i] % 2 == 0) {
       pares[j] = Color[i];
@@ -205,25 +209,26 @@ char OrdenImparPar(u32 n, u32* Orden, u32* Color) {
 
   // Elimino los elementos repetidos de ambos arreglos
   pares = EliminaIguales(pares, &tamPares);
-  __ERROR_CONDICIONAL((pares != NULL), "EliminaIguales", "Error Interno", pares, pares);
+  __ERROR_CONDICIONAL((pares != NULL), "EliminaIguales", "Error Interno", pares,
+                      pares);
   impares = EliminaIguales(impares, &tamImpares);
-  __ERROR_CONDICIONAL((pares != NULL), "OrdenImparPar", "Error Interno", pares, pares);
+  __ERROR_CONDICIONAL((pares != NULL), "OrdenImparPar", "Error Interno", pares,
+                      pares);
 
   // Creo un arreglo para guardar los colores finales ordenados
   k = 0;
 
   // Quiero ordenar los índices en el array Orden en base a su color
-  for (int i = tamImpares-1; i >= 0; i--){
+  for (int i = tamImpares - 1; i >= 0; i--) {
     for (u32 j = 0; j < n; j++) {
       if (Color[j] == impares[i]) {
         Orden[k] = j;
         k++;
       }
     }
-
   }
 
-  for (int i = tamPares-1; i >= 0; i--){
+  for (int i = tamPares - 1; i >= 0; i--) {
     for (u32 j = 0; j < n; j++) {
       if (Color[j] == pares[i]) {
         Orden[k] = j;
@@ -235,70 +240,5 @@ char OrdenImparPar(u32 n, u32* Orden, u32* Color) {
   free(pares);
   free(impares);
 
-  return 0;
-}
-
-
-int main(void){
-  int coloreo1[500], coloreo2[500];
-
-  Grafo G = NULL;
-  G = ConstruirGrafo();
-  u32 n = NumeroDeVertices(G);
-  u32 *Orden = calloc(n, sizeof(u32)), *Color = calloc(n, sizeof(u32));
-
-  // Corremos Greedy en orden natural.
-  for (u32 i = 0; i < n; i++) Orden[i] = i;
-  u32 cant_ord_natural = Greedy(G, Orden, Color);
-  printf("Cantidad de colores con Orden Natural: %d\n", cant_ord_natural);
-
-  int counter = 1;
-
-  u32 cant_colores1, cant_colores2;
-  for (int i = 0; i < 500; i++) {
-    if (counter<=16){
-      // Correr OrdenImparPar y luego Greedy con ese orden
-      OrdenImparPar(n, Orden, Color);
-      // Guardar el resultado en el array coloreo1
-      cant_colores1 = Greedy(G, Orden, Color);
-      coloreo1[i] = cant_colores1;
-
-      // Correr OrdenJedi y luego Greedy con ese orden
-      OrdenJedi(G, Orden, Color);
-      // Guardar el resultado en el array coloreo2
-      cant_colores2 = Greedy(G, Orden, Color);
-      coloreo2[i] = cant_colores2;
-      counter++;
-    } else {
-      // Correr OrdenImparPar y luego Greedy con ese orden
-      OrdenJedi(G, Orden, Color);
-      // Guardar el resultado en el array coloreo1
-      cant_colores1 = Greedy(G, Orden, Color);
-      coloreo1[i] = cant_colores1;
-      // Correr OrdenJedi y luego Greedy con ese orden
-      OrdenImparPar(n, Orden, Color);
-      // Guardar el resultado en el array coloreo2
-      cant_colores2 = Greedy(G, Orden, Color);
-      coloreo2[i] = cant_colores2;
-      counter++;
-      if (counter == 33) counter=1;
-    }
-  }
-
-  // Finalmente, puedes imprimir los resultados obtenidos
-  printf("Resultados de los coloreos:\n");
-  printf("COLOREO 1\n");
-  for (int i = 0; i < 500; i++) {
-    printf("%u ", coloreo1[i]);
-  }
-  printf("\n");
-  printf("COLOREO 2\n");
-  for (int i = 0; i < 500; i++) {
-    printf("%u ", coloreo2[i]);
-  }
-  printf("\n");
-
-  free(Orden); free(Color); DestruirGrafo(G);
-
-  return 0;
+  return '0';
 }
