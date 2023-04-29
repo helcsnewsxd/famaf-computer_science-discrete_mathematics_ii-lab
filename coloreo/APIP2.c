@@ -238,3 +238,67 @@ char OrdenImparPar(u32 n, u32* Orden, u32* Color) {
   return 0;
 }
 
+
+int main(void){
+  int coloreo1[500], coloreo2[500];
+
+  Grafo G = NULL;
+  G = ConstruirGrafo();
+  u32 n = NumeroDeVertices(G);
+  u32 *Orden = calloc(n, sizeof(u32)), *Color = calloc(n, sizeof(u32));
+
+  // Corremos Greedy en orden natural.
+  for (u32 i = 0; i < n; i++) Orden[i] = i;
+  u32 cant_ord_natural = Greedy(G, Orden, Color);
+  printf("Cantidad de colores con Orden Natural: %d\n", cant_ord_natural);
+
+  int counter = 1;
+
+  u32 cant_colores1, cant_colores2;
+  for (int i = 0; i < 500; i++) {
+    if (counter<=16){
+      // Correr OrdenImparPar y luego Greedy con ese orden
+      OrdenImparPar(n, Orden, Color);
+      // Guardar el resultado en el array coloreo1
+      cant_colores1 = Greedy(G, Orden, Color);
+      coloreo1[i] = cant_colores1;
+
+      // Correr OrdenJedi y luego Greedy con ese orden
+      OrdenJedi(G, Orden, Color);
+      // Guardar el resultado en el array coloreo2
+      cant_colores2 = Greedy(G, Orden, Color);
+      coloreo2[i] = cant_colores2;
+      counter++;
+    } else {
+      // Correr OrdenImparPar y luego Greedy con ese orden
+      OrdenJedi(G, Orden, Color);
+      // Guardar el resultado en el array coloreo1
+      cant_colores1 = Greedy(G, Orden, Color);
+      coloreo1[i] = cant_colores1;
+      // Correr OrdenJedi y luego Greedy con ese orden
+      OrdenImparPar(n, Orden, Color);
+      // Guardar el resultado en el array coloreo2
+      cant_colores2 = Greedy(G, Orden, Color);
+      coloreo2[i] = cant_colores2;
+      counter++;
+      if (counter == 33) counter=1;
+    }
+  }
+
+  // Finalmente, puedes imprimir los resultados obtenidos
+  printf("Resultados de los coloreos:\n");
+  printf("COLOREO 1\n");
+  for (int i = 0; i < 500; i++) {
+    printf("%u ", coloreo1[i]);
+  }
+  printf("\n");
+  printf("COLOREO 2\n");
+  for (int i = 0; i < 500; i++) {
+    printf("%u ", coloreo2[i]);
+  }
+  printf("\n");
+
+  free(Orden); free(Color); DestruirGrafo(G);
+
+  return 0;
+}
