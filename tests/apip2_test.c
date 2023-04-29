@@ -1,9 +1,9 @@
-#include "../coloreo/APIP2.h"
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+#include "../coloreo/APIParte2.h"
 
 int main(void) {
   u32 t0, t1;
@@ -40,17 +40,17 @@ int main(void) {
   Orden = calloc(n, sizeof(u32));
   for (u32 i = 0; i < n; i++) Orden[i] = i;
 
-  clock_t inicio,fin;
+  clock_t inicio, fin;
 
   char resultado = OrdenImparPar(n, Orden, Color);
-  if (resultado != 0){
+  if (resultado != 0) {
     exit(EXIT_FAILURE);
   }
 
   inicio = clock();
   u32 cant_colores = Greedy(G, Orden, Color);
   fin = clock();
-  double tiempo = (double)(fin-inicio)/CLOCKS_PER_SEC;
+  double tiempo = (double)(fin - inicio) / CLOCKS_PER_SEC;
   printf("GREEDY CON ORDEN IMPAR PAR TARDA --> %f\n", tiempo);
   printf("RESPUESTA --------> %d\n", cant_colores);
 
@@ -63,7 +63,7 @@ int main(void) {
   printf("\nTEST CASERO PARA COMPROBAR ORDEN DE IMPAR PAR:\n");
 
   n = 11;
-  Color = (u32*) malloc(11 * sizeof(u32));
+  Color = (u32 *)malloc(11 * sizeof(u32));
   Color[0] = 2;
   Color[1] = 3;
   Color[2] = 5;
@@ -75,22 +75,23 @@ int main(void) {
   Color[8] = 8;
   Color[9] = 0;
   Color[10] = 10;
-  Orden = (u32*) malloc(11*sizeof(u32));
+  Orden = (u32 *)malloc(11 * sizeof(u32));
   resultado = OrdenImparPar(n, Orden, Color);
 
   if (resultado == 0) {
-      printf("Indices ordenados: ");
-      for (u32 i = 0; i < n; i++) {
-          printf("%u ", Orden[i]);
-      }
+    printf("Indices ordenados: ");
+    for (u32 i = 0; i < n; i++) {
+      printf("%u ", Orden[i]);
+    }
   } else {
-      printf("Ocurrió un error al ordenar los índices.");
+    printf("Ocurrió un error al ordenar los índices.");
   }
   printf("\n");
 
   free(Color);
   free(Orden);
-  Color = NULL; Orden = NULL;
+  Color = NULL;
+  Orden = NULL;
 
   return 0;
 }

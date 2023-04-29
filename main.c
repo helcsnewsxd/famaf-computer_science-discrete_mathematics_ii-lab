@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "coloreo/APIP2.h"
+#include "coloreo/APIParte2.h"
 
 #define __ERROR_MAIN(cond, pl, s)                \
   if (!(cond)) {                                 \
