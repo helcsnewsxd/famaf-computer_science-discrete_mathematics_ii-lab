@@ -43,13 +43,14 @@ u32 Greedy(Grafo G, u32* Orden, u32* Color) {
   u32 cnt_colores = 1;
   Color[Orden[0]] = 0, vis[Orden[0]] = 1;
 
+
   for (u32 indice = 1; indice < n; indice++) {
     const u32 nodo = Orden[indice], grado = Grado(nodo, G);
     vis[nodo] = 1;
 
     u32 cnt_color_usado = 0;
     memset(color_usado, false, cnt_colores * sizeof(bool));
-
+    
     for (u32 indiceVec = 0; indiceVec < grado; indiceVec++) {
       const u32 vec = IndiceVecino(indiceVec, nodo, G);
       if (!vis[vec]) continue;
@@ -146,5 +147,94 @@ char OrdenJedi(Grafo G, u32* Orden, u32* Color) {
   return '0';
 }
 
-// @juanbratti Completar
-char OrdenImparPar(u32 n, u32* Orden, u32* Color) { return '1'; }
+static int cmp_asc(const void *a, const void *b) {
+    return (*(u32 *)a - *(u32 *)b);
+}
+
+static u32* EliminaIguales(u32* arr, u32* tam) {
+  u32 j = 0;
+
+  for (u32 i = 1; i < *tam; i++){
+    if (arr[i] != arr[j]) {
+      arr[++j] = arr[i];
+    }
+  }
+
+  *tam = j + 1;
+  arr = realloc(arr, (*tam) * sizeof(u32));
+  
+  return arr;
+}
+
+char OrdenImparPar(u32 n, u32* Orden, u32* Color) {
+  const char ERROR = '1';
+
+  // Tamaño de los arreglos de pares e impares
+  u32 tamPares = 0;
+  u32 tamImpares = 0;
+
+  for (u32 i = 0; i < n; i++) {
+    if (Color[i] % 2 == 0) {
+      tamPares++;
+    } else {
+      tamImpares++;
+    }
+  }
+
+  // Creo los arreglos de pares e impares
+  u32* pares = calloc(tamPares, sizeof(u32));
+  __ERROR_CONDICIONAL((pares != NULL), "OrdenImparPar", "Error Interno", pares, pares);
+  u32* impares = calloc(tamImpares, sizeof(u32));
+  __ERROR_CONDICIONAL((impares != NULL), "OrdenImparPar", "Error Interno", impares, impares);
+
+  // Lleno los arreglos de pares e impares
+  u32 j = 0; u32 k = 0;
+  for (u32 i = 0; i < n; i++) {
+    if (Color[i] % 2 == 0) {
+      pares[j] = Color[i];
+      j++;
+    } else {
+      impares[k] = Color[i];
+      k++;
+    }
+  }
+
+  // Ordeno los arreglos
+  qsort(pares, tamPares, sizeof(unsigned int), cmp_asc);
+  qsort(impares, tamImpares, sizeof(unsigned int), cmp_asc);
+
+  // Elimino los elementos repetidos de ambos arreglos
+  pares = EliminaIguales(pares, &tamPares);
+  __ERROR_CONDICIONAL((pares != NULL), "EliminaIguales", "Error Interno", pares, pares);
+  impares = EliminaIguales(impares, &tamImpares);
+  __ERROR_CONDICIONAL((pares != NULL), "OrdenImparPar", "Error Interno", pares, pares);
+
+  // Creo un arreglo para guardar los colores finales ordenados
+  k = 0;
+
+  // Quiero ordenar los índices en el array Orden en base a su color
+  for (int i = tamImpares-1; i >= 0; i--){
+    for (u32 j = 0; j < n; j++) {
+      if (Color[j] == impares[i]) {
+        Orden[k] = j;
+        k++;
+      }
+    }
+
+  }
+
+  for (int i = tamPares-1; i >= 0; i--){
+    for (u32 j = 0; j < n; j++) {
+      if (Color[j] == pares[i]) {
+        Orden[k] = j;
+        k++;
+      }
+    }
+  }
+
+  free(pares);
+  free(impares);
+
+  return 0;
+}
+

@@ -31,11 +31,66 @@ int main(void) {
   printf("GREEDY CON %d ORDEN JEDI TARDA --> %f\n", cnt_jedi,
          (double)(t1 - t0) / CLOCKS_PER_SEC);
 
-  free(Orden), free(Color);
-  Orden = Color = NULL;
-  DestruirGrafo(G);
+  free(Orden);
 
   printf("RESPUESTA --------> %d\n", cnt_col[0]);
+
+  // PARTE ORDEN IMPAR PAR
+
+  Orden = calloc(n, sizeof(u32));
+  for (u32 i = 0; i < n; i++) Orden[i] = i;
+
+  clock_t inicio,fin;
+
+  char resultado = OrdenImparPar(n, Orden, Color);
+  if (resultado != 0){
+    exit(EXIT_FAILURE);
+  }
+
+  inicio = clock();
+  u32 cant_colores = Greedy(G, Orden, Color);
+  fin = clock();
+  double tiempo = (double)(fin-inicio)/CLOCKS_PER_SEC;
+  printf("GREEDY CON ORDEN IMPAR PAR TARDA --> %f\n", tiempo);
+  printf("RESPUESTA --------> %d\n", cant_colores);
+
+  DestruirGrafo(G);
+  free(Orden), free(Color);
+  Orden = Color = NULL;
+
+  // PARTE TEST CASERO APARTE
+
+  printf("\nTEST CASERO PARA COMPROBAR ORDEN DE IMPAR PAR:\n");
+
+  n = 11;
+  Color = (u32*) malloc(11 * sizeof(u32));
+  Color[0] = 2;
+  Color[1] = 3;
+  Color[2] = 5;
+  Color[3] = 1;
+  Color[4] = 4;
+  Color[5] = 6;
+  Color[6] = 7;
+  Color[7] = 9;
+  Color[8] = 8;
+  Color[9] = 0;
+  Color[10] = 10;
+  Orden = (u32*) malloc(11*sizeof(u32));
+  resultado = OrdenImparPar(n, Orden, Color);
+
+  if (resultado == 0) {
+      printf("Indices ordenados: ");
+      for (u32 i = 0; i < n; i++) {
+          printf("%u ", Orden[i]);
+      }
+  } else {
+      printf("Ocurrió un error al ordenar los índices.");
+  }
+  printf("\n");
+
+  free(Color);
+  free(Orden);
+  Color = NULL; Orden = NULL;
 
   return 0;
 }
