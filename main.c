@@ -63,7 +63,7 @@ int main(void) {
     // Estrategia 1
     retorno =
         OrdenImparPar(n, cols[estrategia]->Orden, cols[estrategia]->Color);
-    __ERROR_MAIN(retorno == '0', "main", "Error con Orden Impar Par");
+    __ERROR_MAIN(retorno == 0, "main", "Error con Orden Impar Par");
 
     greedyCol = Greedy(G, cols[estrategia]->Orden, cols[estrategia]->Color);
     __ERROR_MAIN(greedyCol != ERROR, "main", "Error con greedy");
@@ -71,7 +71,7 @@ int main(void) {
 
     // Estrategia 2
     retorno = OrdenJedi(G, cols[!estrategia]->Orden, cols[!estrategia]->Color);
-    __ERROR_MAIN(retorno == '0', "main", "Error con Orden Jedi");
+    __ERROR_MAIN(retorno == 0, "main", "Error con Orden Jedi");
 
     greedyCol = Greedy(G, cols[!estrategia]->Orden, cols[!estrategia]->Color);
     __ERROR_MAIN(greedyCol != ERROR, "main", "Error con greedy");
