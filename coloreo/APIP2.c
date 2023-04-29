@@ -10,7 +10,7 @@
     if (vfr != NULL) free(vfr), vfr = NULL;         \
     if (vfr2 != NULL) free(vfr2), vfr2 = NULL;      \
     fprintf(stderr, "Error en %s: %s\n", pl, s);    \
-    return ERROR;                                   \
+    return (char)1;                                 \
   }
 
 // ---------------------------------- GREEDY ----------------------------------
@@ -125,7 +125,6 @@ void MergeSortJedi(u32* Orden, u32* Color, u32* F, const u32 izq,
  * Si todo anduvo bien, devuelve char 0. Sino, 1
  */
 char OrdenJedi(Grafo G, u32* Orden, u32* Color) {
-  const char ERROR = '1';
   u32 n = NumeroDeVertices(G), r = 0;
 
   u32* F = calloc(n, sizeof(u32));
@@ -143,7 +142,7 @@ char OrdenJedi(Grafo G, u32* Orden, u32* Color) {
   free(F);
   F = NULL;
 
-  return '0';
+  return (char)0;
 }
 
 // ----------------------- ORDEN DE COLOREO IMPAR PAR -----------------------
@@ -178,5 +177,5 @@ void MergeSortImparPar(u32* Orden, u32* Color, const u32 izq, const u32 der) {
 char OrdenImparPar(u32 n, u32* Orden, u32* Color) {
   MergeSortImparPar(Orden, Color, 0, n - 1);
 
-  return '0';
+  return (char)0;
 }
