@@ -56,6 +56,7 @@ int main(void) {
   // Algoritmo pedido
   bool estrategia = 0;
   char retorno;
+  u32 cntCols[2] = {aproxChi, aproxChi};
   for (u32 i = 0; i < 500; i++) {
     // Se swapean los arrays de coloreo y orden según corresponda
     if (i != 0 && i % 16 == 0) estrategia ^= 1;
@@ -67,6 +68,8 @@ int main(void) {
 
     greedyCol = Greedy(G, cols[estrategia]->Orden, cols[estrategia]->Color);
     __ERROR_MAIN(greedyCol != ERROR, "main", "Error con greedy");
+    __ERROR_MAIN(cntCols[estrategia] >= greedyCol, "main", "No cumple VIT");
+    cntCols[estrategia] = greedyCol;
     aproxChi = min(aproxChi, greedyCol);
 
     // Estrategia 2
@@ -75,6 +78,8 @@ int main(void) {
 
     greedyCol = Greedy(G, cols[!estrategia]->Orden, cols[!estrategia]->Color);
     __ERROR_MAIN(greedyCol != ERROR, "main", "Error con greedy");
+    __ERROR_MAIN(cntCols[!estrategia] >= greedyCol, "main", "No cumple VIT");
+    cntCols[!estrategia] = greedyCol;
     aproxChi = min(aproxChi, greedyCol);
   }
 
