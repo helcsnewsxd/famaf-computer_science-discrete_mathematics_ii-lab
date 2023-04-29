@@ -32,7 +32,7 @@ static bool EsColoreoPropio(Grafo G, u32* Orden, u32* Color) {
 // Se asume SZ(Orden) = SZ(Color) = NumeroDeVertices(G) = n
 // Por enunciado, NO se verifica
 u32 Greedy(Grafo G, u32* Orden, u32* Color) {
-  const u32 ERROR = (1LL << 32) - 1, n = NumeroDeVertices(G), d = Delta(G);
+  const u32 n = NumeroDeVertices(G), d = Delta(G);
   bool *color_usado = calloc(d + 1, sizeof(bool)),
        *vis = calloc(n, sizeof(bool));
   __ERROR_CONDICIONAL((color_usado != NULL), "Greedy", "Error interno",
@@ -127,12 +127,14 @@ void MergeSortJedi(u32* Orden, u32* Color, u32* F, const u32 izq,
 char OrdenJedi(Grafo G, u32* Orden, u32* Color) {
   u32 n = NumeroDeVertices(G), r = 0;
 
+  for (u32 i = 0; i < n; i++) Orden[i] = i;
+
   u32* F = calloc(n, sizeof(u32));
   __ERROR_CONDICIONAL((F != NULL), "Orden Jedi", "Error interno", F, F);
   for (u32 indice = 0; indice < n; indice++) {
     __ERROR_CONDICIONAL((Color[indice] < n), "Orden Jedi",
                         "Error con argumento Color", F, F);
-    F[Color[indice]] += Grado(Orden[indice], G);
+    F[Color[indice]] += Grado(indice, G);
     if (r < Color[indice]) r = Color[indice];
   }
   for (u32 color = 0; color < r; color++) F[color] *= color;
@@ -175,6 +177,8 @@ void MergeSortImparPar(u32* Orden, u32* Color, const u32 izq, const u32 der) {
 }
 
 char OrdenImparPar(u32 n, u32* Orden, u32* Color) {
+  for (u32 i = 0; i < n; i++) Orden[i] = i;
+
   MergeSortImparPar(Orden, Color, 0, n - 1);
 
   return (char)0;
