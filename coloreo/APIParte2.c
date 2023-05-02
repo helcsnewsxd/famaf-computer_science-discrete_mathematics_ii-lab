@@ -138,7 +138,7 @@ char OrdenJedi(Grafo G, u32* Orden, u32* Color) {
     F[Color[indice]] += Grado(indice, G);
     if (r < Color[indice]) r = Color[indice];
   }
-  for (u32 color = 0; color < r; color++) F[color] *= color;
+  for (u32 color = 0; color <= r; color++) F[color] *= color;
 
   MergeSortJedi(Orden, Color, F, 0, n - 1);
 
